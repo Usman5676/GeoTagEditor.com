@@ -1,0 +1,1844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image GPS Editor | Add or Edit GPS Coordinates in Photos</title>
+    <meta name="description" content="Free online tool to add, edit, or remove GPS metadata from your photos. Works 100% in your browser - no uploads, completely private.">
+    <meta property="og:title" content="Image GPS Editor - Edit GPS Data in Photos">
+    <meta property="og:description" content="Free online tool to add, edit, or remove GPS metadata from your photos. Works 100% in your browser.">
+    <meta property="og:type" content="website">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/piexifjs"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #7c3aed;
+            --light: #f8fafc;
+            --dark: #1e293b;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
+            color: var(--dark);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .drop-zone {
+            border: 2px dashed #cbd5e0;
+            transition: all 0.3s ease;
+        }
+        
+        .drop-zone.active {
+            border-color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .ad-container {
+            background: #f1f5f9;
+            border-radius: 12px;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .step-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .current-page {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .current-page::after {
+            width: 100%;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 200px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        /* Map Styles */
+        #map {
+            height: 300px;
+            width: 100%;
+            border-radius: 12px;
+            z-index: 1;
+        }
+        
+        .leaflet-container {
+            background: #f8fafc;
+        }
+        
+        .coordinates-container {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .map-container {
+            position: relative;
+            margin-top: 20px;
+        }
+        
+        .map-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .map-btn {
+            background: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .location-marker {
+            background-color: var(--primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .input-with-map {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .input-with-map {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* New UI Improvements */
+        .progress-bar {
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #1e293b;
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: #dcfce7;
+            color: #166534;
+            border-left: 4px solid #22c55e;
+        }
+        
+        .notification.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+        }
+        
+        .notification.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .notification.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            width: 120px;
+        }
+        
+        .step:not(:last-child):after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 60px;
+            width: 60px;
+            height: 2px;
+            background: #e2e8f0;
+        }
+        
+        .step.active:not(:last-child):after {
+            background: var(--primary);
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #64748b;
+        }
+        
+        .step.active .step-number {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 14px;
+            color: #64748b;
+            text-align: center;
+        }
+        
+        .step.active .step-label {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .file-details {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .file-size {
+            font-size: 12px;
+            color: #64748b;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .action-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .action-btn.secondary {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .coordinates-display {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .coordinate-box {
+            flex: 1;
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        
+        .coordinate-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+        
+        .coordinate-value {
+            font-weight: 500;
+        }
+        
+        .coordinate-value.empty {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        
+        .location-actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .location-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .location-btn:hover {
+            background: #e2e8f0;
+        }
+        
+        .location-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .location-btn.primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .process-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .process-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .process-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        
+        .process-btn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .status-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .status-message.info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-message.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-message.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-message.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1e293b;
+        }
+        
+        .section-subtitle {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 24px;
+        }
+        
+        .hero-section {
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        
+        .hero-cta {
+            display: inline-flex;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+        
+        .hero-image {
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        /* Filename Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+        
+        .modal-body {
+            margin-bottom: 24px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        .filename-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        
+        .filename-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .filename-suggestion {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        
+        .filename-suggestion span {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #d1d5db;
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification System -->
+    <div id="notification" class="notification">
+        <div class="notification-icon"></div>
+        <div class="notification-message"></div>
+    </div>
+
+    <!-- Filename Modal -->
+    <div id="filenameModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Save Your Image</h3>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-4 text-gray-600">Enter a filename for your processed image:</p>
+                <input type="text" id="filenameInput" class="filename-input" placeholder="Enter filename..." />
+                <div class="filename-suggestion">
+                    Suggestion: <span id="suggestedFilename">gps_edited_image.jpg</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="modalCancel">Cancel</button>
+                <button class="btn btn-primary" id="modalConfirm">Save Image</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 glass-card shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                    </svg>
+                    <span class="text-xl font-bold text-gray-800">Image GPS Editor</span>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#home" class="nav-link text-gray-600 current-page page-link" data-page="home">Home</a>
+                    <a href="#tool" class="nav-link text-gray-600 page-link" data-page="tool">Tool</a>
+                    <a href="#features" class="nav-link text-gray-600 page-link" data-page="features">Features</a>
+                    <a href="#how-it-works" class="nav-link text-gray-600 page-link" data-page="how-it-works">How It Works</a>
+                    <a href="#about" class="nav-link text-gray-600 page-link" data-page="about">About</a>
+                    <a href="#privacy" class="nav-link text-gray-600 page-link" data-page="privacy">Privacy</a>
+                    <a href="#contact" class="nav-link text-gray-600 page-link" data-page="contact">Contact</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4 relative">
+                    <button id="mobileMenuButton" class="md:hidden p-2 text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <div id="mobileMenu" class="mobile-menu">
+                        <div class="py-2">
+                            <a href="#home" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 page-link" data-page="home">Home</a>
+                            <a href="#tool" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 page-link" data-page="tool">Tool</a>
+                            <a href="#features" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 page-link" data-page="features">Features</a>
+                            <a href="#how-it-works" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 page-link" data-page="how-it-works">How It Works</a>
+                            <a href="#about" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 page-link" data-page="about">About</a>
+                            <a href="#privacy" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 page-link" data-page="privacy">Privacy</a>
+                            <a href="#contact" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 page-link" data-page="contact">Contact</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <section id="home" class="page-section active">
+        <div class="hero-section">
+            <div class="container mx-auto px-4">
+                <h1 class="hero-title">Edit GPS Data in Your Photos</h1>
+                <p class="hero-subtitle">Add, edit, or remove GPS coordinates from your JPEG images with our secure, browser-based tool. Your photos never leave your device.</p>
+                
+                <div class="hero-cta">
+                    <a href="#tool" class="btn-primary text-white font-medium py-3 px-8 rounded-xl inline-block page-link" data-page="tool">Try the Tool</a>
+                    <a href="#how-it-works" class="bg-white text-gray-800 font-medium py-3 px-8 rounded-xl inline-block border border-gray-300 page-link" data-page="how-it-works">Learn More</a>
+                </div>
+                
+                <div class="hero-image">
+                    <div class="glass-card p-6">
+                        <div class="bg-gradient-to-br from-indigo-100 to-purple-100 rounded-xl p-4">
+                            <div class="bg-white rounded-lg p-4 shadow-md">
+                                <div class="flex space-x-2 mb-4">
+                                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                                </div>
+                                <div class="border border-gray-200 rounded-lg p-4 mb-4">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-gray-800">beach_photo.jpg</div>
+                                            <div class="text-xs text-gray-500">2.4 MB • JPEG</div>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <div class="text-xs text-gray-500 mb-1">Latitude</div>
+                                            <div class="text-sm font-medium text-gray-800">34.0522</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-gray-500 mb-1">Longitude</div>
+                                            <div class="text-sm font-medium text-gray-800">-118.2437</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="flex-1 bg-gray-100 text-gray-800 py-2 rounded-lg text-sm font-medium">Cancel</button>
+                                    <button class="flex-1 bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium">Update GPS</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ad Container -->
+    <div class="container mx-auto px-4 mb-12">
+        <div class="ad-container">
+            Advertisement - Your Ad Here
+        </div>
+    </div>
+
+    <!-- Tool Section -->
+    <section id="tool" class="page-section py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="section-title">GPS Metadata Editor</h2>
+                <p class="section-subtitle">Edit GPS coordinates in your JPEG images directly in your browser. No server uploads, your privacy is guaranteed.</p>
+            </div>
+            
+            <div class="max-w-5xl mx-auto">
+                <div class="glass-card p-6 md:p-8">
+                    <!-- Step Indicator -->
+                    <div class="step-indicator">
+                        <div class="step active" id="step-1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Upload Image</div>
+                        </div>
+                        <div class="step" id="step-2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Set Coordinates</div>
+                        </div>
+                        <div class="step" id="step-3">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Download</div>
+                        </div>
+                    </div>
+                    
+                    <!-- File Upload Area -->
+                    <div class="mb-8" id="upload-section">
+                        <label class="block text-lg font-medium text-gray-800 mb-4">Upload Your Image</label>
+                        <div 
+                            id="dropZone" 
+                            class="drop-zone rounded-xl p-8 text-center cursor-pointer bg-gray-50 hover:bg-gray-100 transition-all"
+                        >
+                            <input type="file" id="fileInput" class="hidden" accept="image/jpeg,image/jpg" />
+                            <div class="flex flex-col items-center justify-center">
+                                <svg class="w-12 h-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <p class="text-gray-600 font-medium">Drag & drop your JPEG image here</p>
+                                <p class="text-gray-500 text-sm mt-2">or click to browse files</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- File Info and Preview -->
+                    <div id="file-info-section" class="hidden">
+                        <div class="file-info">
+                            <div class="file-icon">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="file-details">
+                                <div class="file-name" id="file-name">beach_photo.jpg</div>
+                                <div class="file-size" id="file-size">2.4 MB</div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="action-btn secondary" id="change-file">Change</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Preview Thumbnail -->
+                        <div class="mb-8">
+                            <label class="block text-lg font-medium text-gray-800 mb-4">Image Preview</label>
+                            <div class="rounded-xl overflow-hidden border border-gray-200 bg-white p-4">
+                                <img id="previewImage" class="w-full max-h-64 object-contain rounded-lg" />
+                            </div>
+                        </div>
+                        
+                        <!-- Current GPS Data -->
+                        <div class="mb-8">
+                            <label class="block text-lg font-medium text-gray-800 mb-4">Current GPS Data</label>
+                            <div class="coordinates-display">
+                                <div class="coordinate-box">
+                                    <div class="coordinate-label">Latitude</div>
+                                    <div class="coordinate-value empty" id="current-lat">No data</div>
+                                </div>
+                                <div class="coordinate-box">
+                                    <div class="coordinate-label">Longitude</div>
+                                    <div class="coordinate-value empty" id="current-lon">No data</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GPS Coordinates Input with Map -->
+                    <div id="coordinates-section" class="hidden">
+                        <label class="block text-lg font-medium text-gray-800 mb-4">Set New GPS Coordinates</label>
+                        
+                        <div class="input-with-map">
+                            <div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label for="lat" class="block text-sm text-gray-600 mb-2">Latitude</label>
+                                        <input 
+                                            type="number" 
+                                            id="lat" 
+                                            step="any" 
+                                            placeholder="e.g. 34.0522" 
+                                            class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label for="lon" class="block text-sm text-gray-600 mb-2">Longitude</label>
+                                        <input 
+                                            type="number" 
+                                            id="lon" 
+                                            step="any" 
+                                            placeholder="e.g. -118.2437" 
+                                            class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                                        />
+                                    </div>
+                                </div>
+                                
+                                <div class="location-actions">
+                                    <button id="useCurrentLocation" class="location-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                        Use My Location
+                                    </button>
+                                    <button id="clearCoordinates" class="location-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Map Container -->
+                            <div class="map-container">
+                                <div id="map"></div>
+                                <div class="map-controls">
+                                    <button id="locateMe" class="map-btn">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Process Section -->
+                    <div class="process-section">
+                        <button 
+                            id="processBtn" 
+                            class="process-btn"
+                            disabled
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Process Image
+                        </button>
+                        
+                        <div id="status" class="status-message info">
+                            Upload an image to begin editing GPS data
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ad Container -->
+    <div class="container mx-auto px-4 my-12">
+        <div class="ad-container">
+            Advertisement - Your Ad Here
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="page-section py-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="section-title">Why Use Image GPS Editor?</h2>
+                <p class="section-subtitle">Our tool offers everything you need to manage GPS metadata in your photos with complete privacy and ease.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Feature 1 -->
+                <div class="feature-card glass-card p-6 rounded-xl">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Auto Detect GPS</h3>
+                    <p class="text-gray-600">Automatically detects existing GPS metadata in your photos and displays current coordinates.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card glass-card p-6 rounded-xl">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Add or Replace</h3>
+                    <p class="text-gray-600">Easily add new GPS coordinates or replace existing ones with your preferred location data.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card glass-card p-6 rounded-xl">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">100% Privacy</h3>
+                    <p class="text-gray-600">Your images never leave your browser. All processing happens locally for maximum security.</p>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="feature-card glass-card p-6 rounded-xl">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Instant Download</h3>
+                    <p class="text-gray-600">Get your updated image immediately after processing with the new GPS metadata embedded.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="page-section py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">Editing GPS data in your photos is simple with our intuitive three-step process.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <!-- Step 1 -->
+                <div class="step-card glass-card p-6 rounded-xl text-center">
+                    <div class="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-600 font-bold text-xl">1</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Upload Image</h3>
+                    <p class="text-gray-600">Drag and drop your JPEG image or click to browse your files. The tool will automatically detect any existing GPS data.</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="step-card glass-card p-6 rounded-xl text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4 text-purple-600 font-bold text-xl">2</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Enter Coordinates</h3>
+                    <p class="text-gray-600">Input the latitude and longitude you want to add to your image. You can use decimal format for easy entry.</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="step-card glass-card p-6 rounded-xl text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 text-green-600 font-bold text-xl">3</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">Download Updated Image</h3>
+                    <p class="text-gray-600">Click "Process Image" to update the GPS metadata. Your modified image will download automatically.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="page-section py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto">
+                <div class="glass-card p-8 rounded-xl">
+                    <h2 class="section-title">About Image GPS Editor</h2>
+                    <div class="prose max-w-none">
+                        <p class="text-gray-600 mb-4">Image GPS Editor is a free online tool designed for photographers, travelers, and anyone who needs to manage location data in their photos. Whether you want to add missing GPS coordinates, correct inaccurate location data, or protect your privacy by removing location information, our tool makes it simple.</p>
+                        
+                        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Privacy-First Design</h3>
+                        <p class="text-gray-600 mb-4">We believe your photos should remain private. That's why our tool works entirely in your browser - your images are never uploaded to any server. All processing happens locally on your device, ensuring complete confidentiality of your personal photos and location data.</p>
+                        
+                        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Who Is This Tool For?</h3>
+                        <ul class="list-disc pl-5 text-gray-600 mb-4 space-y-2">
+                            <li><strong>Photographers</strong> who want to add location data to their portfolio images</li>
+                            <li><strong>Travel bloggers</strong> needing to correct or add GPS coordinates to travel photos</li>
+                            <li><strong>Privacy-conscious users</strong> who want to remove location data before sharing photos online</li>
+                            <li><strong>Real estate professionals</strong> adding precise location data to property photos</li>
+                        </ul>
+                        
+                        <p class="text-gray-600">Our mission is to provide a simple, secure, and effective solution for managing GPS metadata in digital images without compromising your privacy.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Policy Section -->
+    <section id="privacy" class="page-section py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto">
+                <div class="glass-card p-8 rounded-xl">
+                    <h2 class="section-title">Privacy Policy</h2>
+                    <div class="prose max-w-none">
+                        <p class="text-gray-600 mb-4">At Image GPS Editor, we take your privacy seriously. This policy explains how we handle your data when you use our service.</p>
+                        
+                        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">No Data Collection</h3>
+                        <p class="text-gray-600 mb-4">Our tool works entirely in your browser. We do not collect, store, or transmit any of your images or personal data. All processing happens locally on your device, and your images never leave your computer.</p>
+                        
+                        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Third-Party Services</h3>
+                        <p class="text-gray-600 mb-4">We use Google AdSense to display advertisements on our website. These third-party ad servers may use cookies and similar technologies to provide personalized ads. You can review Google's Privacy Policy for more information.</p>
+                        
+                        <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">Contact Us</h3>
+                        <p class="text-gray-600">If you have any questions about this Privacy Policy, please contact us through our contact page.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="page-section py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto">
+                <div class="glass-card p-8 rounded-xl">
+                    <h2 class="section-title">Contact Us</h2>
+                    <form id="contactForm" class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+                            <input 
+                                type="text" 
+                                id="name" 
+                                class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Your Email</label>
+                            <input 
+                                type="email" 
+                                id="email" 
+                                class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Your Message</label>
+                            <textarea 
+                                id="message" 
+                                rows="5"
+                                class="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                                required
+                            ></textarea>
+                        </div>
+                        <button 
+                            type="submit" 
+                            class="w-full btn-primary text-white font-medium py-4 px-6 rounded-xl transition-all duration-300 transform hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50"
+                        >
+                            Send Message
+                        </button>
+                    </form>
+                    <div id="formStatus" class="mt-4 text-center"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ad Container -->
+    <div class="container mx-auto px-4 my-12">
+        <div class="ad-container">
+            Advertisement - Your Ad Here
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                        </svg>
+                        <span class="text-xl font-bold">Image GPS Editor</span>
+                    </div>
+                    <p class="text-gray-400">Edit GPS metadata in your photos with privacy and ease.</p>
+                </div>
+                
+                <div class="flex flex-wrap justify-center space-x-6 mb-6 md:mb-0">
+                    <a href="#about" class="text-gray-300 hover:text-white transition-colors page-link" data-page="about">About</a>
+                    <a href="#privacy" class="text-gray-300 hover:text-white transition-colors page-link" data-page="privacy">Privacy Policy</a>
+                    <a href="#terms" class="text-gray-300 hover:text-white transition-colors page-link" data-page="terms">Terms of Use</a>
+                    <a href="#contact" class="text-gray-300 hover:text-white transition-colors page-link" data-page="contact">Contact</a>
+                </div>
+                
+                <div class="text-center md:text-right">
+                    <p class="text-gray-400">© 2025 Image GPS Editor. Built by Alex Johnson.</p>
+                    <p class="text-gray-500 text-sm mt-1">All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImage = document.getElementById('previewImage');
+        const latInput = document.getElementById('lat');
+        const lonInput = document.getElementById('lon');
+        const processBtn = document.getElementById('processBtn');
+        const status = document.getElementById('status');
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const pageLinks = document.querySelectorAll('.page-link');
+        const pageSections = document.querySelectorAll('.page-section');
+        const contactForm = document.getElementById('contactForm');
+        const formStatus = document.getElementById('formStatus');
+        const useCurrentLocationBtn = document.getElementById('useCurrentLocation');
+        const clearCoordinatesBtn = document.getElementById('clearCoordinates');
+        const locateMeBtn = document.getElementById('locateMe');
+        const changeFileBtn = document.getElementById('change-file');
+        const fileName = document.getElementById('file-name');
+        const fileSize = document.getElementById('file-size');
+        const currentLat = document.getElementById('current-lat');
+        const currentLon = document.getElementById('current-lon');
+        const uploadSection = document.getElementById('upload-section');
+        const fileInfoSection = document.getElementById('file-info-section');
+        const coordinatesSection = document.getElementById('coordinates-section');
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const step3 = document.getElementById('step-3');
+        const notification = document.getElementById('notification');
+        
+        // Filename modal elements
+        const filenameModal = document.getElementById('filenameModal');
+        const filenameInput = document.getElementById('filenameInput');
+        const suggestedFilename = document.getElementById('suggestedFilename');
+        const modalClose = document.getElementById('modalClose');
+        const modalCancel = document.getElementById('modalCancel');
+        const modalConfirm = document.getElementById('modalConfirm');
+        
+        // Map variables
+        let map;
+        let marker;
+        let currentLocationMarker;
+        let currentFile = null;
+        let processedImageData = null;
+        
+        // Initialize page navigation
+        function initPageNavigation() {
+            // Show home page by default
+            showPage('home');
+            
+            // Add event listeners to page links
+            pageLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    showPage(page);
+                    
+                    // Close mobile menu if open
+                    mobileMenu.classList.remove('active');
+                    
+                    // If showing tool page, initialize map
+                    if (page === 'tool') {
+                        setTimeout(initMap, 100);
+                    }
+                });
+            });
+        }
+        
+        // Show specific page and hide others
+        function showPage(pageId) {
+            pageSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+            
+            // Update active link styling
+            pageLinks.forEach(link => {
+                link.classList.remove('current-page');
+                if (link.getAttribute('data-page') === pageId) {
+                    link.classList.add('current-page');
+                }
+            });
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notificationIcon = notification.querySelector('.notification-icon');
+            const notificationMessage = notification.querySelector('.notification-message');
+            
+            // Set message and type
+            notificationMessage.textContent = message;
+            notification.className = `notification ${type}`;
+            
+            // Set icon based on type
+            let iconSvg = '';
+            switch(type) {
+                case 'success':
+                    iconSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+                    break;
+                case 'error':
+                    iconSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>';
+                    break;
+                case 'warning':
+                    iconSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"></path></svg>';
+                    break;
+                default:
+                    iconSvg = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>';
+            }
+            
+            notificationIcon.innerHTML = iconSvg;
+            
+            // Show notification
+            notification.classList.add('show');
+            
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Initialize Map
+        function initMap() {
+            if (map) {
+                map.remove();
+            }
+            
+            // Create map with default view
+            map = L.map('map').setView([34.0522, -118.2437], 10);
+            
+            // Add tile layer
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Add click event to map
+            map.on('click', function(e) {
+                updateCoordinates(e.latlng.lat, e.latlng.lng);
+                updateMarker(e.latlng);
+            });
+            
+            // Initialize marker
+            marker = L.marker([34.0522, -118.2437], {
+                icon: L.divIcon({
+                    className: 'location-marker',
+                    iconSize: [20, 20]
+                })
+            }).addTo(map);
+            
+            // Add event listeners for coordinate inputs
+            latInput.addEventListener('input', updateMapFromInputs);
+            lonInput.addEventListener('input', updateMapFromInputs);
+        }
+        
+        // Update coordinates in inputs and map
+        function updateCoordinates(lat, lng) {
+            latInput.value = lat.toFixed(6);
+            lonInput.value = lng.toFixed(6);
+            updateMarker([lat, lng]);
+            
+            // Enable process button if we have a file
+            if (currentFile) {
+                processBtn.disabled = false;
+            }
+        }
+        
+        // Update marker position
+        function updateMarker(latlng) {
+            if (marker) {
+                marker.setLatLng(latlng);
+                map.setView(latlng, 13);
+            }
+        }
+        
+        // Update map from coordinate inputs
+        function updateMapFromInputs() {
+            const lat = parseFloat(latInput.value);
+            const lng = parseFloat(lonInput.value);
+            
+            if (!isNaN(lat) && !isNaN(lng)) {
+                updateMarker([lat, lng]);
+                
+                // Enable process button if we have a file
+                if (currentFile) {
+                    processBtn.disabled = false;
+                }
+            }
+        }
+        
+        // Get current location
+        function getCurrentLocation() {
+            if (!navigator.geolocation) {
+                showNotification('Geolocation is not supported by this browser', 'error');
+                return;
+            }
+            
+            showNotification('Getting your location...', 'info');
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    updateCoordinates(lat, lng);
+                    
+                    showNotification('Location found! Coordinates updated.', 'success');
+                    
+                    // Add current location marker
+                    if (currentLocationMarker) {
+                        map.removeLayer(currentLocationMarker);
+                    }
+                    
+                    currentLocationMarker = L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            className: 'current-location-marker',
+                            html: '<div style="background-color: #10b981; width: 16px; height: 16px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.3);"></div>',
+                            iconSize: [16, 16]
+                        })
+                    }).addTo(map)
+                    .bindPopup('Your current location')
+                    .openPopup();
+                },
+                function(error) {
+                    let errorMessage = 'Unable to retrieve your location';
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = 'Location access denied by user';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = 'Location information unavailable';
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = 'Location request timed out';
+                            break;
+                    }
+                    
+                    showNotification(errorMessage, 'error');
+                }
+            );
+        }
+        
+        // Clear coordinates
+        function clearCoordinates() {
+            latInput.value = '';
+            lonInput.value = '';
+            
+            if (marker) {
+                map.removeLayer(marker);
+                marker = L.marker([34.0522, -118.2437], {
+                    icon: L.divIcon({
+                        className: 'location-marker',
+                        iconSize: [20, 20]
+                    })
+                }).addTo(map);
+                map.setView([34.0522, -118.2437], 10);
+            }
+            
+            if (currentLocationMarker) {
+                map.removeLayer(currentLocationMarker);
+                currentLocationMarker = null;
+            }
+            
+            processBtn.disabled = true;
+            status.textContent = 'Coordinates cleared';
+            status.className = 'status-message info';
+        }
+        
+        // Mobile Menu Toggle
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+        
+        // Event Listeners for File Upload
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('active');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('active');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('active');
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileSelect();
+            }
+        });
+        fileInput.addEventListener('change', handleFileSelect);
+        processBtn.addEventListener('click', processImage);
+        changeFileBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            resetTool();
+        });
+        
+        // Map-related event listeners
+        useCurrentLocationBtn.addEventListener('click', getCurrentLocation);
+        clearCoordinatesBtn.addEventListener('click', clearCoordinates);
+        locateMeBtn.addEventListener('click', getCurrentLocation);
+        
+        // Contact Form Handler
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+            
+            // Simple form validation
+            if (!name || !email || !message) {
+                formStatus.textContent = 'Please fill in all fields.';
+                formStatus.className = 'text-red-500';
+                return;
+            }
+            
+            // In a real application, you would send this data to a server
+            // For this demo, we'll just show a success message
+            formStatus.textContent = 'Thank you for your message! We\'ll get back to you soon.';
+            formStatus.className = 'text-green-500';
+            
+            // Reset form
+            contactForm.reset();
+        });
+        
+        // Filename modal event listeners
+        modalClose.addEventListener('click', () => {
+            filenameModal.classList.remove('active');
+        });
+        
+        modalCancel.addEventListener('click', () => {
+            filenameModal.classList.remove('active');
+        });
+        
+        modalConfirm.addEventListener('click', () => {
+            const filename = filenameInput.value.trim();
+            if (!filename) {
+                showNotification('Please enter a filename', 'warning');
+                return;
+            }
+            
+            // Ensure the filename has .jpg extension
+            let finalFilename = filename;
+            if (!finalFilename.toLowerCase().endsWith('.jpg') && !finalFilename.toLowerCase().endsWith('.jpeg')) {
+                finalFilename += '.jpg';
+            }
+            
+            // Download the image with the custom filename
+            downloadImage(finalFilename);
+            
+            // Close the modal
+            filenameModal.classList.remove('active');
+            
+            // Reset after a delay
+            setTimeout(() => {
+                resetTool();
+            }, 2000);
+        });
+        
+        // Use suggested filename when clicked
+        suggestedFilename.addEventListener('click', () => {
+            filenameInput.value = suggestedFilename.textContent;
+        });
+        
+        // Reset tool to initial state
+        function resetTool() {
+            currentFile = null;
+            processedImageData = null;
+            uploadSection.classList.remove('hidden');
+            fileInfoSection.classList.add('hidden');
+            coordinatesSection.classList.add('hidden');
+            step1.classList.add('active');
+            step2.classList.remove('active');
+            step3.classList.remove('active');
+            processBtn.disabled = true;
+            status.textContent = 'Upload an image to begin editing GPS data';
+            status.className = 'status-message info';
+            clearCoordinates();
+        }
+        
+        // File selection handler
+        function handleFileSelect() {
+            const file = fileInput.files[0];
+            if (!file) return;
+            
+            // Check if file is JPEG
+            if (!file.type.match('image/jpeg')) {
+                showNotification('Please upload a JPEG image', 'error');
+                return;
+            }
+            
+            currentFile = file;
+            
+            // Update file info
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            
+            // Show preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                
+                // Update UI to show file info and coordinates section
+                uploadSection.classList.add('hidden');
+                fileInfoSection.classList.remove('hidden');
+                coordinatesSection.classList.remove('hidden');
+                
+                // Update step indicator
+                step1.classList.remove('active');
+                step2.classList.add('active');
+            };
+            reader.readAsDataURL(file);
+            
+            // Check for existing GPS data
+            checkForGPSData(file);
+        }
+        
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' bytes';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            else return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+        
+        // Check for existing GPS data in the image
+        function checkForGPSData(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const exifObj = piexif.load(e.target.result);
+                    const gpsData = exifObj.GPS;
+                    
+                    if (gpsData && Object.keys(gpsData).length > 0) {
+                        status.textContent = 'GPS data found in image';
+                        status.className = 'status-message success';
+                        
+                        // Try to extract and display existing coordinates
+                        try {
+                            const lat = piexif.GPSHelper.dmsRationalToDeg(gpsData[piexif.GPSIFD.GPSLatitude], gpsData[piexif.GPSIFD.GPSLatitudeRef]);
+                            const lon = piexif.GPSHelper.dmsRationalToDeg(gpsData[piexif.GPSIFD.GPSLongitude], gpsData[piexif.GPSIFD.GPSLongitudeRef]);
+                            
+                            if (!isNaN(lat) && !isNaN(lon)) {
+                                currentLat.textContent = lat.toFixed(6);
+                                currentLat.className = 'coordinate-value';
+                                currentLon.textContent = lon.toFixed(6);
+                                currentLon.className = 'coordinate-value';
+                                
+                                // Update inputs and map with existing coordinates
+                                updateCoordinates(lat, lon);
+                            } else {
+                                currentLat.textContent = 'Invalid data';
+                                currentLat.className = 'coordinate-value empty';
+                                currentLon.textContent = 'Invalid data';
+                                currentLon.className = 'coordinate-value empty';
+                            }
+                        } catch (err) {
+                            currentLat.textContent = 'Could not extract';
+                            currentLat.className = 'coordinate-value empty';
+                            currentLon.textContent = 'Could not extract';
+                            currentLon.className = 'coordinate-value empty';
+                        }
+                    } else {
+                        status.textContent = 'No GPS data found - ready to add new coordinates';
+                        status.className = 'status-message info';
+                        currentLat.textContent = 'No data';
+                        currentLat.className = 'coordinate-value empty';
+                        currentLon.textContent = 'No data';
+                        currentLon.className = 'coordinate-value empty';
+                    }
+                } catch (err) {
+                    status.textContent = 'No EXIF data found - ready to add GPS coordinates';
+                    status.className = 'status-message info';
+                    currentLat.textContent = 'No data';
+                    currentLat.className = 'coordinate-value empty';
+                    currentLon.textContent = 'No data';
+                    currentLon.className = 'coordinate-value empty';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Process the image and add GPS data
+        function processImage() {
+            const file = currentFile;
+            const latVal = parseFloat(latInput.value);
+            const lonVal = parseFloat(lonInput.value);
+            
+            if (!file) {
+                showNotification('Please upload an image first', 'warning');
+                return;
+            }
+            
+            if (isNaN(latVal) || isNaN(lonVal)) {
+                showNotification('Please enter valid latitude and longitude values', 'warning');
+                return;
+            }
+            
+            // Update step indicator
+            step2.classList.remove('active');
+            step3.classList.add('active');
+            
+            status.textContent = 'Processing image...';
+            status.className = 'status-message info';
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const base64 = e.target.result;
+                    const latRef = latVal >= 0 ? "N" : "S";
+                    const lonRef = lonVal >= 0 ? "E" : "W";
+                    
+                    // Create GPS data object
+                    const gpsData = {};
+                    gpsData[piexif.GPSIFD.GPSLatitudeRef] = latRef;
+                    gpsData[piexif.GPSIFD.GPSLatitude] = piexif.GPSHelper.degToDmsRational(latVal);
+                    gpsData[piexif.GPSIFD.GPSLongitudeRef] = lonRef;
+                    gpsData[piexif.GPSIFD.GPSLongitude] = piexif.GPSHelper.degToDmsRational(lonVal);
+                    
+                    // Create EXIF object
+                    const exifObj = { "0th": {}, "Exif": {}, "GPS": gpsData, "1st": {} };
+                    const exifBytes = piexif.dump(exifObj);
+                    processedImageData = piexif.insert(exifBytes, base64);
+                    
+                    status.textContent = 'Image processed successfully! Ready to download.';
+                    status.className = 'status-message success';
+                    
+                    showNotification('Image processed successfully!', 'success');
+                    
+                    // Generate suggested filename
+                    const originalName = file.name;
+                    const nameWithoutExt = originalName.replace(/\.[^/.]+$/, "");
+                    const suggestedName = `gps_edited_${nameWithoutExt}.jpg`;
+                    suggestedFilename.textContent = suggestedName;
+                    filenameInput.value = suggestedName;
+                    
+                    // Show filename modal
+                    filenameModal.classList.add('active');
+                    
+                } catch (err) {
+                    console.error(err);
+                    status.textContent = 'Error: ' + err.message;
+                    status.className = 'status-message error';
+                    
+                    showNotification('Error processing image: ' + err.message, 'error');
+                    
+                    // Reset step indicator
+                    step3.classList.remove('active');
+                    step2.classList.add('active');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // Download the processed image with custom filename
+        function downloadImage(filename) {
+            if (!processedImageData) {
+                showNotification('No processed image data available', 'error');
+                return;
+            }
+            
+            // Create download link
+            const link = document.createElement("a");
+            link.href = processedImageData;
+            link.download = filename;
+            link.click();
+            
+            showNotification('Image downloaded successfully!', 'success');
+        }
+        
+        // Initialize the application
+        initPageNavigation();
+        
+        // Initialize map when page loads if on tool page
+        if (window.location.hash === '#tool') {
+            setTimeout(initMap, 500);
+        }
+    </script>
+</body>
+</html>
