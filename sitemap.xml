@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://geotageditor.com/</loc>
+    <lastmod>2025-12-19T16:55:21+00:00</lastmod>
+    <priority>1.00</priority>
+  </url>
+
+  <url>
+    <loc>https://geotageditor.com/tool</loc>
+    <lastmod>2025-12-19T16:55:21+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://geotageditor.com/features</loc>
+    <lastmod>2025-12-19T16:55:21+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://geotageditor.com/how-it-works</loc>
+    <lastmod>2025-12-19T16:55:21+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://geotageditor.com/guides</loc>
+    <lastmod>2025-12-19T16:55:21+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://geotageditor.com/faq</loc>
+    <lastmod>2025-12-19T16:55:21+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://geotageditor.com/about</loc>
+    <lastmod>2025-12-19T16:55:21+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://geotageditor.com/privacy-policy</loc>
+    <lastmod>2025-12-19T16:55:21+00:00</lastmod>
+    <priority>0.80</priority>
+  </url>
+
+</urlset>
