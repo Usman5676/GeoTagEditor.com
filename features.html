@@ -161,7 +161,6 @@
 </head>
 
 <body class="bg-gray-50">
-    <!-- Header -->
     <header class="sticky top-0 z-50 bg-white shadow-soft transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16 lg:h-20">
@@ -193,15 +192,15 @@
                 <!-- Desktop Navigation -->
                 <nav class="hidden lg:flex items-center space-x-1">
                     <a href="index.html"
-                        class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600 active flex items-center">
+                        class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600">
                         <i class="fa-solid fa-house mr-2 text-indigo-500"></i>
                         Home
                     </a>
+
                     <a href="tool.html" class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600">
                         <i class="fas fa-edit mr-2 text-sm"></i>Editor Tool
                     </a>
-                    <a href="features.html"
-                        class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600 active">
+                    <a href="features.html" class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600">
                         <i class="fas fa-star mr-2 text-sm"></i>Features
                     </a>
                     <a href="how-it-works.html"
@@ -224,7 +223,8 @@
                 </nav>
 
                 <!-- Mobile Menu Button -->
-               <button id="mobileMenuButton" class="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 hover-lift transition-all">
+                <button id="mobileMenuButton"
+                    class="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 hover-lift transition-all">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
@@ -234,19 +234,19 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobileMenu" class="lg:hidden bg-white border-t border-gray-100 shadow-lg transform origin-top transition-all duration-300 scale-y-0 opacity-0 absolute w-full z-40">
-
-            <div class="px-4 py-6 space-y-1">
+        <div id="mobileMenu"
+            class="lg:hidden bg-white border-t border-gray-100 shadow-lg transform origin-top transition-all duration-300 scale-y-0 opacity-0 absolute w-full z-40">
+            <div class="px-4 py-6 space-y-1 bg-grid-pattern">
                 <a href="index.html"
-                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
-                    <i class="fas fa-home mr-3 text-indigo-500"></i>Home
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all active bg-gray-50">
+                    <i class="fa-solid fa-home mr-3 text-indigo-500"></i>Home
                 </a>
                 <a href="tool.html"
                     class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
                     <i class="fas fa-edit mr-3 text-indigo-500"></i>Editor Tool
                 </a>
                 <a href="features.html"
-                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all active bg-indigo-50 text-indigo-700">
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
                     <i class="fas fa-star mr-3 text-indigo-500"></i>Features
                 </a>
                 <a href="how-it-works.html"
