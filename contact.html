@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Meta Tags -->
+    <title>Contact Geotag Editor | Email Only | GeotagEditor.com</title>
+    <meta name="description"
+        content="Contact the Geotag Editor team. Have questions, feedback, or partnership ideas? Reach out to us at geotageditor@gmail.com. We reply within 24h.">
+    <meta name="keywords"
+        content="contact geotag editor, geotag support, privacy tool contact, exif editor help, feedback">
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-geotageditor.com.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-geotageditor.com.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/favicon-geotageditor.com.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="assets/images/favicon-geotageditor.com.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon-geotageditor.com.png">
+    <link rel="shortcut icon" href="assets/images/favicon-geotageditor.com.png">
+
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS (kept from original, plus responsive refinements) -->
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #e0e7ff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            min-height: 100vh;
+        }
+
+        .header-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .shadow-soft {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .shadow-deep {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .transition-all {
+            transition: all 0.3s ease;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .footer-wave {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        .footer-wave svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 40px;
+        }
+
+        .footer-wave .shape-fill {
+            fill: #ffffff;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .bg-grid-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* Contact Page Specific Styles - fully responsive */
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: #64748b;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .hero-subtitle {
+                font-size: 1.125rem;
+                padding: 0 0.5rem;
+            }
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: #64748b;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+        }
+
+        .contact-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            height: 100%;
+        }
+
+        @media (max-width: 640px) {
+            .contact-card {
+                padding: 1.5rem;
+            }
+        }
+
+        .contact-card:hover {
+            border-color: #4f46e5;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(79, 70, 229, 0.15);
+        }
+
+        .contact-icon {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        @media (max-width: 480px) {
+            .contact-icon {
+                width: 3.5rem;
+                height: 3.5rem;
+                font-size: 1.25rem;
+            }
+        }
+
+        .email-badge {
+            background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+            border: 1px solid #a5b4fc;
+            word-break: break-word;
+        }
+
+        /* ensure email link wraps on small screens */
+        .break-email {
+            word-break: break-all;
+        }
+
+        @media (max-width: 480px) {
+            .email-badge a {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* responsive grid for resource cards */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .resource-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://geotageditor.com/contact.html">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        "name": "Contact Geotag Editor",
+        "description": "Contact the Geotag Editor team for support, feedback, or partnerships.",
+        "url": "https://geotageditor.com/contact.html",
+        "publisher": {
+            "@type": "Organization",
+            "name": "GeotagEditor.com",
+            "url": "https://geotageditor.com",
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "email": "geotageditor@gmail.com",
+                "contactType": "customer support",
+                "availableLanguage": "English"
+            }
+        }
+    }
+    </script>
+</head>
+
+<body class="bg-gray-50">
+    <!-- HEADER (exactly as provided, with active class handled by JS) -->
+    <header class="sticky top-0 z-50 bg-white shadow-soft transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 lg:h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white">
+                        </div>
+                    </div>
+                    <div>
+                        <a href="index.html"
+                            class="text-xl font-bold text-gray-900 hover:text-indigo-600 transition-colors">Geotag
+                            Editor</a>
+                        <div class="text-xs text-gray-500 font-medium">by GeotagEditor.com</div>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden lg:flex items-center space-x-1">
+                    <a href="index.html"
+                        class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600">
+                        <i class="fa-solid fa-house mr-2 text-indigo-500"></i> Home
+                    </a>
+                    <a href="tool.html" class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600">
+                        <i class="fas fa-edit mr-2 text-sm"></i>Editor Tool
+                    </a>
+                    <a href="features.html" class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600">
+                        <i class="fas fa-star mr-2 text-sm"></i>Features
+                    </a>
+                    <a href="how-it-works.html"
+                        class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600">
+                        <i class="fas fa-play-circle mr-2 text-sm"></i>How It Works
+                    </a>
+                    <a href="guides.html" class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600">
+                        <i class="fas fa-book mr-2 text-sm"></i>Guides
+                    </a>
+                    <a href="faq.html" class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600">
+                        <i class="fas fa-question-circle mr-2 text-sm"></i>FAQ
+                    </a>
+                    <a href="about.html" class="nav-link px-4 py-2 text-gray-700 font-medium hover:text-indigo-600">
+                        <i class="fas fa-info-circle mr-2 text-sm"></i>About
+                    </a>
+                    <a href="tool.html"
+                        class="ml-4 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover-lift transition-all shadow-md hover:shadow-lg">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Start Editing
+                    </a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuButton"
+                    class="lg:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100 hover-lift transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu"
+            class="lg:hidden bg-white border-t border-gray-100 shadow-lg transform origin-top transition-all duration-300 scale-y-0 opacity-0 absolute w-full z-40">
+            <div class="px-4 py-6 space-y-1 bg-grid-pattern">
+                <a href="index.html"
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
+                    <i class="fa-solid fa-home mr-3 text-indigo-500"></i>Home
+                </a>
+                <a href="tool.html"
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
+                    <i class="fas fa-edit mr-3 text-indigo-500"></i>Editor Tool
+                </a>
+                <a href="features.html"
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
+                    <i class="fas fa-star mr-3 text-indigo-500"></i>Features
+                </a>
+                <a href="how-it-works.html"
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
+                    <i class="fas fa-play-circle mr-3 text-indigo-500"></i>How It Works
+                </a>
+                <a href="guides.html"
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
+                    <i class="fas fa-book mr-3 text-indigo-500"></i>Guides
+                </a>
+                <a href="faq.html"
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
+                    <i class="fas fa-question-circle mr-3 text-indigo-500"></i>FAQ
+                </a>
+                <a href="about.html"
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
+                    <i class="fas fa-info-circle mr-3 text-indigo-500"></i>About
+                </a>
+                <a href="contact.html"
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all bg-indigo-50 text-indigo-700">
+                    <i class="fas fa-envelope mr-3 text-indigo-500"></i>Contact
+                </a>
+                <a href="privacy-policy.html"
+                    class="flex items-center px-4 py-3 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-all">
+                    <i class="fas fa-shield-alt mr-3 text-indigo-500"></i>Privacy Policy
+                </a>
+                <div class="pt-4 mt-4 border-t border-gray-100">
+                    <a href="tool.html"
+                        class="block text-center px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-lg hover-lift transition-all shadow-md">
+                        <i class="fas fa-map-marker-alt mr-2"></i>Start Editing GPS Data
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION (responsive) -->
+    <section class="relative overflow-hidden py-16 md:py-24 lg:py-28">
+        <div class="absolute inset-0 bg-grid-pattern opacity-10"></div>
+        <div
+            class="absolute top-0 right-0 w-64 h-64 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse">
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-64 h-64 bg-indigo-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse delay-1000">
+        </div>
+
+        <div class="section-container relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+                <div
+                    class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-indigo-50 text-indigo-600 font-medium mb-6">
+                    <i class="fas fa-envelope mr-2"></i>Get in Touch
+                </div>
+                <h1 class="hero-title">Contact Us</h1>
+                <p class="hero-subtitle">Have questions, feedback, or partnership ideas? We'd love to hear from you. Reach out directly via email, and we'll respond promptly.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MAIN CONTACT CARD (NO FORM, ONLY EMAIL) - FULLY RESPONSIVE -->
+    <section class="py-16 lg:py-20 bg-white">
+        <div class="section-container">
+            <div class="max-w-3xl mx-auto px-4 sm:px-0">
+                <!-- Primary Email Card -->
+                <div class="contact-card text-center p-8 md:p-12 lg:p-16">
+                    <div class="contact-icon bg-indigo-100 text-indigo-600 mx-auto">
+                        <i class="fas fa-envelope-open-text"></i>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Email Us Directly</h2>
+                    <p class="text-gray-600 text-base md:text-lg mb-8">Click the email address below to open your default mail app and send us a message.</p>
+                    
+                    <!-- Email Badge with mailto link (responsive text) -->
+                    <a href="mailto:geotageditor@gmail.com" 
+                       class="inline-flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 px-5 sm:px-8 py-4 email-badge rounded-2xl text-indigo-800 font-semibold text-xl sm:text-2xl hover:shadow-lg transition-all group w-full sm:w-auto break-email">
+                        <i class="fas fa-envelope text-indigo-600 text-2xl sm:text-3xl group-hover:scale-110 transition-transform"></i>
+                        <span class="underline decoration-2 decoration-indigo-300 underline-offset-4 break-all">geotageditor@gmail.com</span>
+                    </a>
+
+                    <p class="text-gray-500 mt-6 text-sm">
+                        <i class="fas fa-clock mr-1"></i> Typically replies within 24 hours
+                    </p>
+
+                    <!-- Additional Contact Info Row (responsive wrap) -->
+                    <div class="mt-10 pt-8 border-t border-gray-100 flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-8 text-sm">
+                        <div class="flex items-center justify-center text-gray-600">
+                            <i class="fas fa-check-circle text-green-500 mr-2"></i> No sign-up needed
+                        </div>
+                        <div class="flex items-center justify-center text-gray-600">
+                            <i class="fas fa-lock text-indigo-500 mr-2"></i> Privacy respected
+                        </div>
+                        <div class="flex items-center justify-center text-gray-600">
+                            <i class="fas fa-heart text-red-400 mr-2"></i> We read every message
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Open Source Note (responsive) -->
+                <div class="mt-8 text-center p-6 bg-indigo-50 rounded-xl">
+                    <p class="text-indigo-800 text-sm sm:text-base">
+                        <i class="fab fa-github mr-2"></i> 
+                        Geotag Editor is open source. For bug reports or technical contributions, please visit our 
+                        <a href="https://github.com/geotageditor" target="_blank" class="font-bold underline decoration-indigo-300 hover:text-indigo-600">GitHub repository</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESOURCES SECTION (responsive grid) -->
+    <section class="py-16 lg:py-20 bg-gradient-to-b from-gray-50 to-white">
+        <div class="section-container">
+            <div class="max-w-4xl mx-auto text-center mb-10">
+                <h2 class="section-title">Quick Help & Resources</h2>
+                <p class="section-subtitle">Before emailing, check if your question is answered in our FAQ or guides</p>
+            </div>
+
+            <!-- responsive grid: 3 -> 2 -> 1 column -->
+            <div class="resource-grid max-w-4xl mx-auto">
+                <a href="faq.html"
+                    class="contact-card flex flex-col items-center text-center p-6 sm:p-8 no-underline hover:border-indigo-400">
+                    <div class="w-14 h-14 bg-indigo-100 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fas fa-question-circle text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Frequently Asked Questions</h3>
+                    <p class="text-gray-600 text-sm">Find answers about privacy, supported formats, and features.</p>
+                    <span class="mt-4 text-indigo-600 font-medium">Browse FAQ →</span>
+                </a>
+
+                <a href="guides.html"
+                    class="contact-card flex flex-col items-center text-center p-6 sm:p-8 no-underline hover:border-indigo-400">
+                    <div class="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fas fa-book-open text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">User Guides</h3>
+                    <p class="text-gray-600 text-sm">Step-by-step tutorials on editing GPS metadata.</p>
+                    <span class="mt-4 text-indigo-600 font-medium">Read Guides →</span>
+                </a>
+
+                <a href="tool.html"
+                    class="contact-card flex flex-col items-center text-center p-6 sm:p-8 no-underline hover:border-indigo-400">
+                    <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mb-4">
+                        <i class="fas fa-map-marker-alt text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Try the Editor</h3>
+                    <p class="text-gray-600 text-sm">Jump straight into the tool. No sign-up.</p>
+                    <span class="mt-4 text-indigo-600 font-medium">Start Editing →</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER (exactly as provided) -->
+    <footer class="relative bg-gray-900 text-gray-300">
+        <!-- Wave Divider -->
+        <div class="footer-wave">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"
+                preserveAspectRatio="none">
+                <path
+                    d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+                    class="shape-fill"></path>
+            </svg>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+                <!-- Brand & Description -->
+                <div class="lg:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div
+                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                                </path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Geotag Editor</h3>
+                            <div class="text-sm text-indigo-300 font-medium">GeotagEditor.com</div>
+                        </div>
+                    </div>
+                    <p class="text-gray-400 max-w-md">
+                        Free online tool to add, edit or remove GPS metadata from photos.
+                        100% browser-based processing ensures your photos never leave your device.
+                    </p>
+                    <div class="mt-6 flex space-x-4">
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors">
+                            <i class="fab fa-twitter text-gray-300"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors">
+                            <i class="fab fa-github text-gray-300"></i>
+                        </a>
+                        <a href="#"
+                            class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center transition-colors">
+                            <i class="fab fa-linkedin-in text-gray-300"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="tool.html"
+                                class="flex items-center text-gray-400 hover:text-white transition-colors group">
+                                <i
+                                    class="fas fa-chevron-right text-xs mr-2 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                Editor Tool
+                            </a>
+                        </li>
+                        <li>
+                            <a href="features.html"
+                                class="flex items-center text-gray-400 hover:text-white transition-colors group">
+                                <i
+                                    class="fas fa-chevron-right text-xs mr-2 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                Features
+                            </a>
+                        </li>
+                        <li>
+                            <a href="how-it-works.html"
+                                class="flex items-center text-gray-400 hover:text-white transition-colors group">
+                                <i
+                                    class="fas fa-chevron-right text-xs mr-2 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                How It Works
+                            </a>
+                        </li>
+                        <li>
+                            <a href="about.html"
+                                class="flex items-center text-gray-400 hover:text-white transition-colors group">
+                                <i
+                                    class="fas fa-chevron-right text-xs mr-2 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                About
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Resources & Legal -->
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Resources & Legal</h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="privacy-policy.html"
+                                class="flex items-center text-gray-400 hover:text-white transition-colors group">
+                                <i
+                                    class="fas fa-chevron-right text-xs mr-2 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                Privacy Policy
+                            </a>
+                        </li>
+                        <li>
+                            <a href="terms.html"
+                                class="flex items-center text-gray-400 hover:text-white transition-colors group">
+                                <i
+                                    class="fas fa-chevron-right text-xs mr-2 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                Terms of Service
+                            </a>
+                        </li>
+                        <li>
+                            <a href="contact.html"
+                                class="flex items-center text-gray-400 hover:text-white transition-colors group active text-indigo-300">
+                                <i class="fas fa-chevron-right text-xs mr-2 text-indigo-400"></i>
+                                Contact Us
+                            </a>
+                        </li>
+                        <li>
+                            <a href="sitemap.xml"
+                                class="flex items-center text-gray-400 hover:text-white transition-colors group">
+                                <i
+                                    class="fas fa-chevron-right text-xs mr-2 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                                Sitemap
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Privacy Badge -->
+                    <div class="mt-8 p-4 bg-gray-800 rounded-lg border border-gray-700">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-green-900/30 flex items-center justify-center mr-3">
+                                <i class="fas fa-shield-alt text-green-400"></i>
+                            </div>
+                            <div>
+                                <div class="text-white font-medium">100% Secure</div>
+                                <div class="text-xs text-gray-400">All processing happens in your browser</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="mt-12 pt-8 border-t border-gray-800">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="text-gray-500 text-sm">
+                        © 2025 <span class="text-white font-medium">GeotagEditor.com</span> • All Rights Reserved
+                    </div>
+                    <div class="mt-4 md:mt-0 text-gray-500 text-sm">
+                        Made with <i class="fas fa-heart text-red-400 mx-1"></i> for photographers worldwide
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts (mobile menu and active link) -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            if (mobileMenu.classList.contains('scale-y-0')) {
+                mobileMenu.classList.remove('scale-y-0', 'opacity-0');
+                mobileMenu.classList.add('scale-y-100', 'opacity-100');
+            } else {
+                mobileMenu.classList.remove('scale-y-100', 'opacity-100');
+                mobileMenu.classList.add('scale-y-0', 'opacity-0');
+            }
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!mobileMenu.contains(event.target) && !mobileMenuButton.contains(event.target)) {
+                mobileMenu.classList.remove('scale-y-100', 'opacity-100');
+                mobileMenu.classList.add('scale-y-0', 'opacity-0');
+            }
+        });
+
+        // Set active nav link based on current page
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileLinks = document.querySelectorAll('#mobileMenu a');
+
+            // Update desktop nav
+            navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                if (linkHref === currentPage || (currentPage === '' && linkHref === 'index.html')) {
+                    link.classList.add('active');
+                    link.classList.add('text-indigo-600');
+                } else {
+                    link.classList.remove('active');
+                    link.classList.remove('text-indigo-600');
+                }
+            });
+
+            // Update mobile nav
+            mobileLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                if (linkHref === currentPage || (currentPage === '' && linkHref === 'index.html')) {
+                    link.classList.add('active', 'bg-indigo-50', 'text-indigo-700');
+                } else {
+                    link.classList.remove('active', 'bg-indigo-50', 'text-indigo-700');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
