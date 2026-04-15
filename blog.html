@@ -125,8 +125,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .bg-grid-pattern {
@@ -277,13 +284,16 @@
             <!-- Search Bar -->
             <div class="mb-16 max-w-3xl mx-auto relative group z-10">
                 <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-gray-400 group-focus-within:text-indigo-500 transition-colors text-xl"></i>
+                    <i
+                        class="fas fa-search text-gray-400 group-focus-within:text-indigo-500 transition-colors text-xl"></i>
                 </div>
-                <input type="text" id="blogSearchInput" 
+                <input type="text" id="blogSearchInput"
                     class="block w-full pl-16 pr-20 py-5 rounded-2xl border-0 shadow-lg focus:ring-4 focus:ring-indigo-100 bg-white text-gray-900 transition-all hover:shadow-xl text-lg outline-none placeholder-gray-400 font-medium"
                     placeholder="Search for guides, tutorials, tips...">
                 <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                    <span class="text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200 hidden sm:block">CTRL K</span>
+                    <span
+                        class="text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1.5 rounded-lg border border-gray-200 hidden sm:block">CTRL
+                        K</span>
                 </div>
             </div>
 
@@ -296,32 +306,52 @@
 
                 <div
                     class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover-lift transition-all flex flex-col md:flex-row group">
+
+                    <!-- IMAGE SECTION -->
                     <div
                         class="w-full md:w-1/2 md:order-2 relative overflow-hidden bg-gray-200 aspect-video md:aspect-auto">
-                        <!-- Placeholder for image -->
-                        <img src="https://res.cloudinary.com/dpckpvdhp/image/upload/v1776196108/Complete_Guide_to_Photo_Metadata_GPS_Data_GeoTag_Editor_ftpbxh.png" alt="Complete Guide to Photo Metadata & GPS Data" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+
+                        <img src="https://res.cloudinary.com/dpckpvdhp/image/upload/v1776196108/Complete_Guide_to_Photo_Metadata_GPS_Data_GeoTag_Editor_ftpbxh.png"
+                            alt="Complete Guide to Photo Metadata and GPS Data" loading="lazy"
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+
+                        <!-- Optional overlay (premium look) -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+
                     </div>
+
+                    <!-- TEXT SECTION -->
                     <div
                         class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center order-1 border-r border-gray-100">
+
                         <div class="flex items-center gap-3 mb-4">
                             <span
-                                class="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full uppercase tracking-wide">Ultimate
-                                Guide</span>
-                            <span class="text-sm text-gray-500"><i class="far fa-calendar-alt mr-1"></i> Oct 24,
-                                2025</span>
+                                class="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full uppercase tracking-wide">
+                                Ultimate Guide
+                            </span>
+                            <span class="text-sm text-gray-500">
+                                <i class="far fa-calendar-alt mr-1"></i> Oct 24, 2025
+                            </span>
                         </div>
+
                         <h3
                             class="text-3xl font-bold text-gray-900 mb-5 leading-tight group-hover:text-indigo-600 transition-colors">
-                            Complete Guide to Photo Metadata & GPS Data</h3>
-                        <p class="text-gray-600 mb-8 text-lg line-clamp-3">Understand exactly what EXIF data is, how
-                            location metadata gets embedded into your photos, and master the best practices for
-                            controlling what you share online.</p>
+                            Complete Guide to Photo Metadata & GPS Data
+                        </h3>
+
+                        <p class="text-gray-600 mb-8 text-lg line-clamp-3">
+                            Understand exactly what EXIF data is, how location metadata gets embedded into your photos,
+                            and master the best practices for controlling what you share online.
+                        </p>
+
                         <div>
                             <a href="/blog/photo-metadata-guide.html"
                                 class="inline-flex items-center justify-center px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-indigo-600 transition-colors">
-                                Read Full Article <i class="fas fa-arrow-right ml-2 text-sm"></i>
+                                Read Full Article
+                                <i class="fas fa-arrow-right ml-2 text-sm"></i>
                             </a>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -338,10 +368,9 @@
                 <article
                     class="blog-card bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 hover-lift transition-all flex flex-col group">
                     <div class="relative h-56 w-full overflow-hidden bg-gray-100">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-indigo-400 to-indigo-600 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
-                            <i class="fas fa-shield-alt text-white text-5xl opacity-80"></i>
-                        </div>
+                        <img src="https://res.cloudinary.com/dpckpvdhp/image/upload/v1776197620/How_to_Remove_GPS_Data_from_Photos_Securely_GeoTagEditor_tunln7.png"
+                            alt="How to Remove GPS Data from Photos Securely"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     </div>
                     <div class="p-6 flex-grow flex flex-col">
                         <div class="flex justify-between items-center mb-3">
@@ -364,7 +393,9 @@
                 <article
                     class="blog-card bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 hover-lift transition-all flex flex-col group">
                     <div class="relative h-56 w-full overflow-hidden bg-gray-100">
-                        <img src="https://res.cloudinary.com/dwmbp9ck9/image/upload/q_auto/f_auto/v1775738498/Add_Location_Data_to_Scanned_Photos_vfks43.png" alt="Adding Location Data to Scanned Photos" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        <img src="https://res.cloudinary.com/dwmbp9ck9/image/upload/q_auto/f_auto/v1775738498/Add_Location_Data_to_Scanned_Photos_vfks43.png"
+                            alt="Adding Location Data to Scanned Photos"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     </div>
                     <div class="p-6 flex-grow flex flex-col">
                         <div class="flex justify-between items-center mb-3">
@@ -386,9 +417,10 @@
                 <article
                     class="blog-card bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 hover-lift transition-all flex flex-col group">
                     <div class="relative h-56 w-full overflow-hidden bg-gray-100">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
-                            <i class="fas fa-home text-white text-5xl opacity-80"></i>
+                        <div class="relative h-56 w-full overflow-hidden bg-gray-100">
+                            <img src="https://res.cloudinary.com/dpckpvdhp/image/upload/v1776198715/Why_Real_Estate_Agents_Must_Geotag_Property_Photos_ccypsa.png"
+                                alt="Adding Location Data to Scanned Photos"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         </div>
                     </div>
                     <div class="p-6 flex-grow flex flex-col">
@@ -407,39 +439,14 @@
                     </div>
                 </article>
 
-                <!-- Card 4 -->
+                <!-- Card 4-->
                 <article
                     class="blog-card bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 hover-lift transition-all flex flex-col group">
                     <div class="relative h-56 w-full overflow-hidden bg-gray-100">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
-                            <i class="fas fa-globe-americas text-white text-5xl opacity-80"></i>
-                        </div>
-                    </div>
-                    <div class="p-6 flex-grow flex flex-col">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="text-xs font-semibold text-teal-600 uppercase tracking-wider">Travel</span>
-                            <span class="text-xs text-gray-500">Sep 28, 2025</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-teal-600 transition-colors">
-                            Creating a Travel Map from Your Photos</h3>
-                        <p class="text-gray-600 mb-6 flex-grow text-sm line-clamp-2">Turn your vacation pictures into an
-                            interactive map. We show you how to ensure your GPS data is accurate before creating visual
-                            journeys.</p>
-                        <a href="/blog/travel-photo-maps.html"
-                            class="mt-auto inline-flex items-center text-teal-600 font-semibold hover:text-teal-800 transition-colors text-sm">
-                            Read More <i class="fas fa-arrow-right ml-1 text-xs"></i>
-                        </a>
-                    </div>
-                </article>
-
-                <!-- Card 5 -->
-                <article
-                    class="blog-card bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 hover-lift transition-all flex flex-col group">
-                    <div class="relative h-56 w-full overflow-hidden bg-gray-100">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
-                            <i class="fab fa-instagram text-white text-5xl opacity-80"></i>
+                        <div class="relative h-56 w-full overflow-hidden bg-gray-100">
+                            <img src="https://res.cloudinary.com/dpckpvdhp/image/upload/v1776239772/Do_Social_Networks_Strip_Geotags_mjtwr1.png"
+                                alt="Do Social Networks Strip Geotags"
+                                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                         </div>
                     </div>
                     <div class="p-6 flex-grow flex flex-col">
@@ -460,14 +467,13 @@
                     </div>
                 </article>
 
-                <!-- Card 6 -->
+                <!-- Card 4 -->
                 <article
                     class="blog-card bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100 hover-lift transition-all flex flex-col group">
                     <div class="relative h-56 w-full overflow-hidden bg-gray-100">
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
-                            <i class="fas fa-code text-white text-5xl opacity-80"></i>
-                        </div>
+                        <img src="https://res.cloudinary.com/dpckpvdhp/image/upload/v1776240167/Understanding_Decimal_Degrees_vs_DMS_sf8k4t.png"
+                            alt="Understanding Decimal Degrees vs DMS"
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     </div>
                     <div class="p-6 flex-grow flex flex-col">
                         <div class="flex justify-between items-center mb-3">
@@ -486,6 +492,8 @@
                     </div>
                 </article>
 
+
+
             </div>
 
             <!-- No Results Message -->
@@ -494,16 +502,38 @@
                     <i class="fas fa-search text-3xl text-gray-400"></i>
                 </div>
                 <h3 class="text-2xl font-bold text-gray-900 mb-2">No results found</h3>
-                <p class="text-gray-500 max-w-md mx-auto">We couldn't find any articles matching your search. Please try again with different keywords.</p>
-                <button onclick="document.getElementById('blogSearchInput').value=''; document.getElementById('blogSearchInput').dispatchEvent(new Event('input'))" class="mt-6 px-6 py-2 bg-indigo-50 text-indigo-600 font-semibold rounded-lg hover:bg-indigo-100 transition-colors">
+                <p class="text-gray-500 max-w-md mx-auto">We couldn't find any articles matching your search. Please try
+                    again with different keywords.</p>
+                <button
+                    onclick="document.getElementById('blogSearchInput').value=''; document.getElementById('blogSearchInput').dispatchEvent(new Event('input'))"
+                    class="mt-6 px-6 py-2 bg-indigo-50 text-indigo-600 font-semibold rounded-lg hover:bg-indigo-100 transition-colors">
                     Clear Search
                 </button>
             </div>
 
             <!-- Pagination -->
-            <div class="flex justify-center mt-16 mb-8" id="paginationContainer" style="display: none;">
-                <nav class="inline-flex rounded-lg shadow-sm" aria-label="Pagination" id="paginationNav">
-                    <!-- Pagination will be dynamically inserted here via JS -->
+            <div class="flex justify-center mt-16 mb-8">
+                <nav class="inline-flex rounded-lg shadow-sm" aria-label="Pagination">
+                    <a href="#"
+                        class="px-4 py-2 border border-gray-300 bg-white text-gray-500 rounded-l-lg hover:bg-gray-50 transition-colors flex items-center">
+                        <i class="fas fa-chevron-left text-xs mr-2"></i> Previous
+                    </a>
+                    <a href="#"
+                        class="px-4 py-2 border-t border-b border-gray-300 bg-indigo-50 text-indigo-700 font-semibold border-l-0">
+                        1
+                    </a>
+                    <!-- <a href="#"
+                        class="px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium border-l-0">
+                        2
+                    </a>
+                    <a href="#"
+                        class="px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium border-l-0">
+                        3
+                    </a> -->
+                    <a href="#"
+                        class="px-4 py-2 border border-gray-300 bg-white text-gray-500 rounded-r-lg hover:bg-gray-50 transition-colors flex items-center border-l-0">
+                        Next <i class="fas fa-chevron-right text-xs ml-2"></i>
+                    </a>
                 </nav>
             </div>
 
@@ -732,133 +762,59 @@
             });
         });
 
-        // Search & Pagination Functionality for Blog
+        // Search Functionality for Blog
         document.addEventListener('DOMContentLoaded', () => {
             const searchInput = document.getElementById('blogSearchInput');
-            const blogCards = Array.from(document.querySelectorAll('.blog-card'));
-            const featuredPost = document.getElementById('featuredPostContainer');
-            const noResultsMessage = document.getElementById('noResultsMessage');
-            const paginationContainer = document.getElementById('paginationContainer');
-            const paginationNav = document.getElementById('paginationNav');
-            const latestPostsHeader = document.querySelector('#blogGrid') ? document.querySelector('#blogGrid').previousElementSibling : null;
-            
-            const CARDS_PER_PAGE = 6;
-            let currentPage = 1;
-            let currentSearchTerm = "";
-            let filteredCards = [...blogCards];
-
-            function renderCards() {
-                // Hide all cards first
-                blogCards.forEach(card => card.style.display = 'none');
-                
-                if (currentSearchTerm.length > 0) {
-                    // Search mode: show all filtered matches
-                    filteredCards.forEach(card => {
-                        card.style.display = 'flex';
-                        card.style.animation = 'fadeIn 0.5s ease-out forwards';
-                    });
-                } else {
-                    // Pagination mode
-                    const startIndex = (currentPage - 1) * CARDS_PER_PAGE;
-                    const endIndex = startIndex + CARDS_PER_PAGE;
-                    filteredCards.slice(startIndex, endIndex).forEach(card => {
-                        card.style.display = 'flex';
-                        card.style.animation = 'fadeIn 0.5s ease-out forwards';
-                    });
-                }
-
-                if (filteredCards.length === 0) {
-                    if(noResultsMessage) noResultsMessage.classList.remove('hidden');
-                    if(latestPostsHeader) latestPostsHeader.style.display = 'none';
-                } else {
-                    if(noResultsMessage) noResultsMessage.classList.add('hidden');
-                    if(latestPostsHeader) latestPostsHeader.style.display = 'flex';
-                }
-            }
-
-            function renderPagination() {
-                if (!paginationContainer || !paginationNav) return;
-
-                if (currentSearchTerm.length > 0 || filteredCards.length <= CARDS_PER_PAGE) {
-                    paginationContainer.style.display = 'none';
-                    return;
-                }
-                
-                paginationContainer.style.display = 'flex';
-                const totalPages = Math.ceil(filteredCards.length / CARDS_PER_PAGE);
-                
-                let html = '';
-                
-                // Prev button
-                const prevDisabled = currentPage === 1 ? 'pointer-events-none opacity-50' : '';
-                html += `<a href="#" data-page="prev" class="${prevDisabled} px-4 py-2 border border-gray-300 bg-white text-gray-500 rounded-l-lg hover:bg-gray-50 transition-colors flex items-center"><i class="fas fa-chevron-left text-xs mr-2"></i> Previous</a>`;
-
-                // Page numbers
-                for (let i = 1; i <= totalPages; i++) {
-                    const activeClass = currentPage === i 
-                        ? 'bg-indigo-50 text-indigo-700 font-semibold' 
-                        : 'bg-white text-gray-700 hover:bg-gray-50 font-medium';
-                    html += `<a href="#" data-page="${i}" class="px-4 py-2 border-t border-b border-gray-300 border-l-0 ${activeClass}">${i}</a>`;
-                }
-
-                // Next button
-                const nextDisabled = currentPage === totalPages ? 'pointer-events-none opacity-50' : '';
-                html += `<a href="#" data-page="next" class="${nextDisabled} px-4 py-2 border border-gray-300 bg-white text-gray-500 rounded-r-lg hover:bg-gray-50 transition-colors flex items-center border-l-0">Next <i class="fas fa-chevron-right text-xs ml-2"></i></a>`;
-
-                paginationNav.innerHTML = html;
-
-                // Bind click events
-                const links = paginationNav.querySelectorAll('a');
-                links.forEach(link => {
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        const targetPage = e.currentTarget.getAttribute('data-page');
-                        
-                        if (targetPage === 'prev' && currentPage > 1) {
-                            currentPage--;
-                        } else if (targetPage === 'next' && currentPage < totalPages) {
-                            currentPage++;
-                        } else if (targetPage !== 'prev' && targetPage !== 'next') {
-                            currentPage = parseInt(targetPage);
-                        }
-                        
-                        renderCards();
-                        renderPagination();
-                        
-                        const blogGridElem = document.getElementById('blogGrid');
-                        if (blogGridElem) {
-                            const offset = blogGridElem.previousElementSibling ? blogGridElem.previousElementSibling.offsetTop - 100 : blogGridElem.offsetTop - 100;
-                            window.scrollTo({ top: offset, behavior: 'smooth' });
-                        }
-                    });
-                });
-            }
-
             if (searchInput) {
-                searchInput.addEventListener('input', function(e) {
-                    currentSearchTerm = e.target.value.toLowerCase().trim();
-                    currentPage = 1;
-                    
-                    if (currentSearchTerm.length > 0) {
+                const blogCards = document.querySelectorAll('.blog-card');
+                const featuredPost = document.getElementById('featuredPostContainer');
+                const noResultsMessage = document.getElementById('noResultsMessage');
+                const pagination = document.querySelector('nav[aria-label="Pagination"]').parentElement;
+                const latestPostsHeader = document.querySelector('#blogGrid').previousElementSibling;
+
+                searchInput.addEventListener('input', function (e) {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+                    let matchCount = 0;
+
+                    if (searchTerm.length > 0) {
                         if (featuredPost) featuredPost.style.display = 'none';
-                        if (latestPostsHeader) latestPostsHeader.querySelector('h2').textContent = 'Search Results';
-                        
-                        filteredCards = blogCards.filter(card => {
-                            const title = card.querySelector('h3').textContent.toLowerCase();
-                            const desc = card.querySelector('p').textContent.toLowerCase();
-                            const category = card.querySelector('.uppercase').textContent.toLowerCase();
-                            return title.includes(currentSearchTerm) || desc.includes(currentSearchTerm) || category.includes(currentSearchTerm);
-                        });
+                        if (pagination) pagination.style.display = 'none';
+                        if (latestPostsHeader) {
+                            latestPostsHeader.querySelector('h2').textContent = 'Search Results';
+                        }
                     } else {
                         if (featuredPost) featuredPost.style.display = 'block';
-                        if (latestPostsHeader) latestPostsHeader.querySelector('h2').textContent = 'Latest Posts';
-                        filteredCards = [...blogCards];
+                        if (pagination) pagination.style.display = 'flex';
+                        if (latestPostsHeader) {
+                            latestPostsHeader.querySelector('h2').textContent = 'Latest Posts';
+                        }
                     }
-                    
-                    renderCards();
-                    renderPagination();
+
+                    blogCards.forEach(card => {
+                        const title = card.querySelector('h3').textContent.toLowerCase();
+                        const desc = card.querySelector('p').textContent.toLowerCase();
+                        const category = card.querySelector('.uppercase').textContent.toLowerCase();
+
+                        if (title.includes(searchTerm) || desc.includes(searchTerm) || category.includes(searchTerm)) {
+                            card.style.display = 'flex';
+                            card.style.animation = 'fadeIn 0.5s ease-out forwards';
+                            matchCount++;
+                        } else {
+                            card.style.display = 'none';
+                            card.style.animation = ''; // reset
+                        }
+                    });
+
+                    if (matchCount === 0 && searchTerm.length > 0) {
+                        noResultsMessage.classList.remove('hidden');
+                        if (latestPostsHeader) latestPostsHeader.style.display = 'none';
+                    } else {
+                        noResultsMessage.classList.add('hidden');
+                        if (latestPostsHeader) latestPostsHeader.style.display = 'flex';
+                    }
                 });
 
+                // Keyboard shortcut Ctrl+K to focus search wrapper
                 document.addEventListener('keydown', e => {
                     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                         e.preventDefault();
@@ -866,10 +822,6 @@
                     }
                 });
             }
-
-            // Initialize
-            renderCards();
-            renderPagination();
         });
     </script>
 </body>
