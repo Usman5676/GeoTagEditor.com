@@ -299,10 +299,7 @@
                     <div
                         class="w-full md:w-1/2 md:order-2 relative overflow-hidden bg-gray-200 aspect-video md:aspect-auto">
                         <!-- Placeholder for image -->
-                        <div
-                            class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 flex flex-col items-center justify-center text-white opacity-90 transition-transform duration-500 group-hover:scale-105">
-                            <i class="fas fa-map-marked-alt text-6xl mb-4 opacity-75"></i>
-                        </div>
+                        <img src="https://res.cloudinary.com/dpckpvdhp/image/upload/v1776196108/Complete_Guide_to_Photo_Metadata_GPS_Data_GeoTag_Editor_ftpbxh.png" alt="Complete Guide to Photo Metadata & GPS Data" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
                     </div>
                     <div
                         class="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center order-1 border-r border-gray-100">
@@ -504,28 +501,9 @@
             </div>
 
             <!-- Pagination -->
-            <div class="flex justify-center mt-16 mb-8">
-                <nav class="inline-flex rounded-lg shadow-sm" aria-label="Pagination">
-                    <a href="#"
-                        class="px-4 py-2 border border-gray-300 bg-white text-gray-500 rounded-l-lg hover:bg-gray-50 transition-colors flex items-center">
-                        <i class="fas fa-chevron-left text-xs mr-2"></i> Previous
-                    </a>
-                    <a href="#"
-                        class="px-4 py-2 border-t border-b border-gray-300 bg-indigo-50 text-indigo-700 font-semibold border-l-0">
-                        1
-                    </a>
-                    <a href="#"
-                        class="px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium border-l-0">
-                        2
-                    </a>
-                    <a href="#"
-                        class="px-4 py-2 border-t border-b border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium border-l-0">
-                        3
-                    </a>
-                    <a href="#"
-                        class="px-4 py-2 border border-gray-300 bg-white text-gray-500 rounded-r-lg hover:bg-gray-50 transition-colors flex items-center border-l-0">
-                        Next <i class="fas fa-chevron-right text-xs ml-2"></i>
-                    </a>
+            <div class="flex justify-center mt-16 mb-8" id="paginationContainer" style="display: none;">
+                <nav class="inline-flex rounded-lg shadow-sm" aria-label="Pagination" id="paginationNav">
+                    <!-- Pagination will be dynamically inserted here via JS -->
                 </nav>
             </div>
 
@@ -754,59 +732,133 @@
             });
         });
 
-        // Search Functionality for Blog
+        // Search & Pagination Functionality for Blog
         document.addEventListener('DOMContentLoaded', () => {
             const searchInput = document.getElementById('blogSearchInput');
-            if (searchInput) {
-                const blogCards = document.querySelectorAll('.blog-card');
-                const featuredPost = document.getElementById('featuredPostContainer');
-                const noResultsMessage = document.getElementById('noResultsMessage');
-                const pagination = document.querySelector('nav[aria-label="Pagination"]').parentElement;
-                const latestPostsHeader = document.querySelector('#blogGrid').previousElementSibling;
+            const blogCards = Array.from(document.querySelectorAll('.blog-card'));
+            const featuredPost = document.getElementById('featuredPostContainer');
+            const noResultsMessage = document.getElementById('noResultsMessage');
+            const paginationContainer = document.getElementById('paginationContainer');
+            const paginationNav = document.getElementById('paginationNav');
+            const latestPostsHeader = document.querySelector('#blogGrid') ? document.querySelector('#blogGrid').previousElementSibling : null;
+            
+            const CARDS_PER_PAGE = 6;
+            let currentPage = 1;
+            let currentSearchTerm = "";
+            let filteredCards = [...blogCards];
+
+            function renderCards() {
+                // Hide all cards first
+                blogCards.forEach(card => card.style.display = 'none');
                 
-                searchInput.addEventListener('input', function(e) {
-                    const searchTerm = e.target.value.toLowerCase().trim();
-                    let matchCount = 0;
+                if (currentSearchTerm.length > 0) {
+                    // Search mode: show all filtered matches
+                    filteredCards.forEach(card => {
+                        card.style.display = 'flex';
+                        card.style.animation = 'fadeIn 0.5s ease-out forwards';
+                    });
+                } else {
+                    // Pagination mode
+                    const startIndex = (currentPage - 1) * CARDS_PER_PAGE;
+                    const endIndex = startIndex + CARDS_PER_PAGE;
+                    filteredCards.slice(startIndex, endIndex).forEach(card => {
+                        card.style.display = 'flex';
+                        card.style.animation = 'fadeIn 0.5s ease-out forwards';
+                    });
+                }
 
-                    if (searchTerm.length > 0) {
-                        if (featuredPost) featuredPost.style.display = 'none';
-                        if (pagination) pagination.style.display = 'none';
-                        if (latestPostsHeader) {
-                            latestPostsHeader.querySelector('h2').textContent = 'Search Results';
-                        }
-                    } else {
-                        if (featuredPost) featuredPost.style.display = 'block';
-                        if (pagination) pagination.style.display = 'flex';
-                        if (latestPostsHeader) {
-                            latestPostsHeader.querySelector('h2').textContent = 'Latest Posts';
-                        }
-                    }
+                if (filteredCards.length === 0) {
+                    if(noResultsMessage) noResultsMessage.classList.remove('hidden');
+                    if(latestPostsHeader) latestPostsHeader.style.display = 'none';
+                } else {
+                    if(noResultsMessage) noResultsMessage.classList.add('hidden');
+                    if(latestPostsHeader) latestPostsHeader.style.display = 'flex';
+                }
+            }
 
-                    blogCards.forEach(card => {
-                        const title = card.querySelector('h3').textContent.toLowerCase();
-                        const desc = card.querySelector('p').textContent.toLowerCase();
-                        const category = card.querySelector('.uppercase').textContent.toLowerCase();
+            function renderPagination() {
+                if (!paginationContainer || !paginationNav) return;
+
+                if (currentSearchTerm.length > 0 || filteredCards.length <= CARDS_PER_PAGE) {
+                    paginationContainer.style.display = 'none';
+                    return;
+                }
+                
+                paginationContainer.style.display = 'flex';
+                const totalPages = Math.ceil(filteredCards.length / CARDS_PER_PAGE);
+                
+                let html = '';
+                
+                // Prev button
+                const prevDisabled = currentPage === 1 ? 'pointer-events-none opacity-50' : '';
+                html += `<a href="#" data-page="prev" class="${prevDisabled} px-4 py-2 border border-gray-300 bg-white text-gray-500 rounded-l-lg hover:bg-gray-50 transition-colors flex items-center"><i class="fas fa-chevron-left text-xs mr-2"></i> Previous</a>`;
+
+                // Page numbers
+                for (let i = 1; i <= totalPages; i++) {
+                    const activeClass = currentPage === i 
+                        ? 'bg-indigo-50 text-indigo-700 font-semibold' 
+                        : 'bg-white text-gray-700 hover:bg-gray-50 font-medium';
+                    html += `<a href="#" data-page="${i}" class="px-4 py-2 border-t border-b border-gray-300 border-l-0 ${activeClass}">${i}</a>`;
+                }
+
+                // Next button
+                const nextDisabled = currentPage === totalPages ? 'pointer-events-none opacity-50' : '';
+                html += `<a href="#" data-page="next" class="${nextDisabled} px-4 py-2 border border-gray-300 bg-white text-gray-500 rounded-r-lg hover:bg-gray-50 transition-colors flex items-center border-l-0">Next <i class="fas fa-chevron-right text-xs ml-2"></i></a>`;
+
+                paginationNav.innerHTML = html;
+
+                // Bind click events
+                const links = paginationNav.querySelectorAll('a');
+                links.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const targetPage = e.currentTarget.getAttribute('data-page');
                         
-                        if (title.includes(searchTerm) || desc.includes(searchTerm) || category.includes(searchTerm)) {
-                            card.style.display = 'flex';
-                            card.style.animation = 'fadeIn 0.5s ease-out forwards';
-                            matchCount++;
-                        } else {
-                            card.style.display = 'none';
-                            card.style.animation = ''; // reset
+                        if (targetPage === 'prev' && currentPage > 1) {
+                            currentPage--;
+                        } else if (targetPage === 'next' && currentPage < totalPages) {
+                            currentPage++;
+                        } else if (targetPage !== 'prev' && targetPage !== 'next') {
+                            currentPage = parseInt(targetPage);
+                        }
+                        
+                        renderCards();
+                        renderPagination();
+                        
+                        const blogGridElem = document.getElementById('blogGrid');
+                        if (blogGridElem) {
+                            const offset = blogGridElem.previousElementSibling ? blogGridElem.previousElementSibling.offsetTop - 100 : blogGridElem.offsetTop - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
                         }
                     });
+                });
+            }
 
-                    if (matchCount === 0 && searchTerm.length > 0) {
-                        noResultsMessage.classList.remove('hidden');
-                        if (latestPostsHeader) latestPostsHeader.style.display = 'none';
+            if (searchInput) {
+                searchInput.addEventListener('input', function(e) {
+                    currentSearchTerm = e.target.value.toLowerCase().trim();
+                    currentPage = 1;
+                    
+                    if (currentSearchTerm.length > 0) {
+                        if (featuredPost) featuredPost.style.display = 'none';
+                        if (latestPostsHeader) latestPostsHeader.querySelector('h2').textContent = 'Search Results';
+                        
+                        filteredCards = blogCards.filter(card => {
+                            const title = card.querySelector('h3').textContent.toLowerCase();
+                            const desc = card.querySelector('p').textContent.toLowerCase();
+                            const category = card.querySelector('.uppercase').textContent.toLowerCase();
+                            return title.includes(currentSearchTerm) || desc.includes(currentSearchTerm) || category.includes(currentSearchTerm);
+                        });
                     } else {
-                        noResultsMessage.classList.add('hidden');
-                        if (latestPostsHeader) latestPostsHeader.style.display = 'flex';
+                        if (featuredPost) featuredPost.style.display = 'block';
+                        if (latestPostsHeader) latestPostsHeader.querySelector('h2').textContent = 'Latest Posts';
+                        filteredCards = [...blogCards];
                     }
+                    
+                    renderCards();
+                    renderPagination();
                 });
 
-                // Keyboard shortcut Ctrl+K to focus search wrapper
                 document.addEventListener('keydown', e => {
                     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                         e.preventDefault();
@@ -814,6 +866,10 @@
                     }
                 });
             }
+
+            // Initialize
+            renderCards();
+            renderPagination();
         });
     </script>
 </body>
